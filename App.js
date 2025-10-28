@@ -1,77 +1,47 @@
+import 'react-native-gesture-handler';
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// --- Skærm-komponenter ---
-function HomeScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text>Her vil der være et kort</Text>
-      
-    </View>
-  );
-}
+// Importér komponenter
+import LoginScreen from './components/LoginScreen.jsx';
+import RegisterScreen from './components/RegisterScreen.jsx';
+import MainTabs from './components/MainTabs.jsx';
+import RuteScreen from './components/RuteScreen.jsx'; // 👈 Kortet ligger her nu
+import EditProfileScreen from './components/EditProfileScreen.jsx';
+import FindFriendsScreen from './components/FindFriendsScreen.jsx'; // 👈 NY
 
-function ProfileScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text>Dette er din profil</Text>
-    </View>
-  );
-}
+const Stack = createStackNavigator();
 
-function StatsScreen() {
-  return (
-    <View style={styles.screen}>
-      <Text>Her finder du dine statistikker</Text>
-    </View>
-  );
-}
-
-// --- Opret tab-navigator ---
-const Tab = createBottomTabNavigator();
-
-// --- App-komponenten ---
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-
-            if (route.name === 'Home') {
-              iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Profile') {
-              iconName = focused ? 'person' : 'person-outline';
-            } else if (route.name === 'Stats') {
-             iconName = focused ? 'stats-chart' : 'stats-chart-outline';
-            }
-
-            // Returnér et Ionicons-ikon
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#42a4ff',
-          tabBarInactiveTintColor: 'gray',
-        })}
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right', // 👈 Glidende skift mellem skærme
+        }}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Stats" component={StatsScreen} />
-      </Tab.Navigator>
+        {/* Login & registrering */}
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+
+        {/* Hovedapp med bundnavigation */}
+        <Stack.Screen name="MainTabs" component={MainTabs} />
+
+        {/* Rute (kortet) */}
+        <Stack.Screen name="RuteScreen" component={RuteScreen} />
+
+        {/* Rediger profil */}
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+
+        {/* Find venner / hundeejere */}
+        <Stack.Screen name="FindFriends" component={FindFriendsScreen} />
+      </Stack.Navigator>
 
       <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
